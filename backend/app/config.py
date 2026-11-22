@@ -9,8 +9,10 @@ class Settings:
     # Automatically falls back to SQLite for instant local zero-setup execution.
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./frontdesk.db")
     
-    # If using Render / Supabase / Railway postgres, SQLAlchemy requires postgresql:// instead of postgres://
+    # Normalize Render / Supabase / Railway PostgreSQL connection strings
     if DATABASE_URL.startswith("postgres://"):
-        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
+    elif DATABASE_URL.startswith("postgresql://") and not DATABASE_URL.startswith("postgresql+"):
+        DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
 
 settings = Settings()
