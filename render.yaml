@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: frontdesk-arvo
+    env: python
+    buildCommand: "cd frontend && npm install && npm run build && cd .. && pip install -r backend/requirements.txt"
+    startCommand: "uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: frontdesk-db
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: 3.12.0
+
+databases:
+  - name: frontdesk-db
+    databaseName: frontdesk
+    user: frontdesk_user
+    plan: free
